@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en" class="sk">
+<html lang="en" class="sk" data-scheme="light">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="color-scheme" content="light dark"/>
+<meta name="color-scheme" content="light"/>
 <link rel="icon" href="data:,"/>
 <title>Builders &amp; GCs — Sharma Electric &amp; HVAC</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,9 +17,8 @@
   --radius:16px; --shadow:0 14px 34px rgba(4,18,42,.16);
   --bar-h:66px;
 }
-@media (prefers-color-scheme: dark){
-  :root{ --bg:#050f1f; --surface:#0d213c; --surface2:#16304f; --ink:#eef3fa; --muted:#a7b8cf; --line:#223c5e; --shadow:0 14px 34px rgba(0,0,0,.5); }
-}
+/* Light-always (Sanjay 2026-11-19): dark only via the kit data-scheme switch, never the OS. */
+[data-scheme="dark"]{ --bg:#050f1f; --surface:#0d213c; --surface2:#16304f; --ink:#eef3fa; --muted:#a7b8cf; --line:#223c5e; --shadow:0 14px 34px rgba(0,0,0,.5); }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-bottom:calc(var(--bar-h) + 30px)}
 body{margin:0;font-family:"Barlow",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.45;padding-bottom:calc(var(--bar-h) + env(safe-area-inset-bottom) + 12px)}
@@ -138,7 +137,7 @@ main{max-width:1140px;margin:0 auto;padding:0 14px}
 .btn-primary{background:var(--orange);color:#fff;box-shadow:0 10px 24px rgba(242,106,18,.38)}
 .btn-primary:hover{background:var(--orange2);transform:translateY(-1px)}
 .btn-navy{background:var(--navy);color:#fff}
-@media (prefers-color-scheme: dark){.btn-navy{background:var(--surface2);color:var(--ink)}}
+[data-scheme="dark"] .btn-navy{background:var(--surface2);color:var(--ink)}
 .btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
 .btn-outline:hover{border-color:var(--orange);color:var(--orange)}
 .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.65)}
@@ -182,7 +181,7 @@ main{max-width:1140px;margin:0 auto;padding:0 14px}
 .prod .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
 .prod .tag{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--surface2);color:var(--ink)}
 .prod .tag.best{background:rgba(242,106,18,.15);color:var(--orange)}
-@media (prefers-color-scheme: dark){.prod .tag.best{color:var(--gold)}}
+[data-scheme="dark"] .prod .tag.best{color:var(--gold)}
 
 /* ————— Steps ————— */
 .steps{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0}
@@ -211,7 +210,7 @@ main{max-width:1140px;margin:0 auto;padding:0 14px}
 .size-note{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:15px;margin:12px 0 6px;line-height:1.6}
 .size-note b{color:var(--orange)}
 .count{display:inline-block;font-weight:800;color:#fff;background:var(--navy);border-radius:999px;padding:5px 13px;font-size:13px;width:fit-content;letter-spacing:.02em}
-@media (prefers-color-scheme: dark){.count{background:var(--surface2);color:var(--ink)}}
+[data-scheme="dark"] .count{background:var(--surface2);color:var(--ink)}
 
 /* ————— Brand tiles ————— */
 .brandgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0 4px}
@@ -236,7 +235,7 @@ main{max-width:1140px;margin:0 auto;padding:0 14px}
 /* ————— County chips ————— */
 .chips{display:flex;gap:7px;flex-wrap:wrap;padding:14px 2px 4px}
 .chips span{border:1.5px solid var(--navy);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 17px;font-weight:700;font-size:15px}
-@media (prefers-color-scheme: dark){.chips span{border-color:var(--line)}}
+[data-scheme="dark"] .chips span{border-color:var(--line)}
 
 /* ————— Contact band: photo-backed, dramatic ————— */
 .contactband{position:relative;overflow:hidden;color:#fff;border-radius:20px;padding:30px 22px;margin:22px 0 6px;box-shadow:var(--shadow);background:linear-gradient(125deg,var(--navy) 0%,var(--navy-deep) 72%)}
@@ -314,9 +313,21 @@ footer a{color:var(--orange);font-weight:600}
 <script src="https://sharma-kit.sharma-crew.workers.dev/sharma-kit.js" defer></script>
 <style>
 /* Sharma kit bridge: room for the kit header/tab bar; app layout otherwise untouched. */
+/* C-upgrade 2026-11-19: native feel — view cross-fade + per-view scroll keep (see
+   showView), grouped inset lists (16px side margins, rounded grouped cards),
+   every tappable control 44px+. No bottom sheet / detail overlay in this app
+   (nothing to convert to a kit sheet); data is inline, so pull-to-refresh is N/A. */
 body.sk{padding-bottom:calc(var(--sk-tab-h,54px) + env(safe-area-inset-bottom,0px) + 10px)}
 .sk-header{z-index:60}
 .topbar,.tabs{display:none!important}
+main{padding:0 16px}
+.view.sk-enter{animation:skViewIn .2s cubic-bezier(.32,.72,.35,1)}
+@keyframes skViewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view.sk-enter{animation:none}}
+.btn,.link-btn{min-height:44px}
+.link-btn{display:inline-flex;align-items:center}
+.hero-track{min-height:44px}
+.tabs button{min-height:44px}
 </style>
 </head>
 <body class="sk">
@@ -756,10 +767,16 @@ body.sk{padding-bottom:calc(var(--sk-tab-h,54px) + env(safe-area-inset-bottom,0p
 </div>
 
 <script>
+var skScroll={}; var skCur=null;
 function showView(name){
+  if(skCur===null){ var c0=document.querySelector(".view.on"); if(c0) skCur=c0.id.replace("view-",""); }
+  if(skCur && skCur!==name) skScroll[skCur]=window.scrollY;
   document.querySelectorAll("[data-view]").forEach(function(x){x.classList.toggle("on",x.getAttribute("data-view")===name)});
   document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("on",v.id==="view-"+name)});
-  window.scrollTo({top:0});
+  skCur=name;
+  window.scrollTo(0, skScroll[name]||0);
+  var nv=document.getElementById("view-"+name);
+  if(nv){ nv.classList.remove("sk-enter"); void nv.offsetWidth; nv.classList.add("sk-enter"); }
 }
 document.querySelectorAll("[data-view]").forEach(function(b){
  b.addEventListener("click",function(){showView(b.getAttribute("data-view"))});
@@ -786,7 +803,7 @@ document.querySelectorAll("[data-view]").forEach(function(b){
       e.preventDefault();
       var b = document.querySelector('[data-view="' + t.getAttribute("data-sk-view") + '"]');
       if (b) b.click();
-      sync(); scrollTo(0,0);
+      sync();
     });
   });
   document.addEventListener("click", function(){ setTimeout(sync, 30); });
